@@ -223,19 +223,19 @@ async function handleFormSubmit(event, type) {
                       `🎯 *Objetivos:* ${goals}`;
     }
 
-    // Salvar lead no Supabase
-    await saveLead(leadData);
-
-    // Gerar link e redirecionar para o WhatsApp
+    // Gerar link do WhatsApp e abrir IMEDIATAMENTE, ainda no mesmo gesto de clique do usuário.
+    // Navegadores mobile (Safari/iOS, in-app browsers) bloqueiam window.open() se ele
+    // acontecer depois de um await — por isso isso vem antes de salvar no Supabase.
     const encodedText = encodeURIComponent(messageText);
-    const whatsappUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodedText}`;
-    
-    // Abrir WhatsApp em nova aba
-    window.open(whatsappUrl, "_blank");
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedText}`;
+    const whatsappWindow = window.open(whatsappUrl, "_blank");
+
+    // Salvar lead no Supabase (não bloqueia a abertura do WhatsApp)
+    await saveLead(leadData);
 
     // Limpar formulários
     event.target.reset();
-    
+
     // Resetar seletores para o padrão active
     if (type === "quick") {
         selectCard('q-income', 'De R$ 5.000 a R$ 10.000');
@@ -247,7 +247,17 @@ async function handleFormSubmit(event, type) {
         selectCard('f-risk', 'Moderado');
     }
 
-    alert("Obrigado pelo preenchimento! Você será redirecionado para o WhatsApp do assessor.");
+    if (!whatsappWindow || whatsappWindow.closed) {
+        // Popup bloqueado: oferecer o link diretamente para o usuário clicar
+        const fallback = confirm(
+            "Não conseguimos abrir o WhatsApp automaticamente (o navegador bloqueou). Clique OK para abrir o link manualmente."
+        );
+        if (fallback) {
+            window.location.href = whatsappUrl;
+        }
+    } else {
+        alert("Obrigado pelo preenchimento! Confira a nova aba do WhatsApp e clique em enviar para falar com o assessor.");
+    }
 }
 
 // Lógica para Salvar Lead
