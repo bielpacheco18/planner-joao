@@ -196,6 +196,37 @@ body {
     margin-bottom: 0.5rem;
 }
 
+/* Cabeçalhos de seção PF / PJ */
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 0.5rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.section-heading .section-badge {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #000;
+    background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 100%);
+    padding: 0.25rem 0.8rem;
+    border-radius: 50px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.section-heading.pj .section-badge {
+    background: linear-gradient(135deg, #1d9e5b 0%, #25d366 100%);
+}
+
+.section-heading .section-caption {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
 /* Inputs & Form Groups */
 .input-group {
     display: flex;

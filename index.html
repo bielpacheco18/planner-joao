@@ -36,6 +36,11 @@
                 <h2 class="form-title">Planejamento Estratégico</h2>
                 <p class="form-description">Forneça detalhes adicionais sobre sua realidade financeira para um plano completo.</p>
 
+                <div class="section-heading pf">
+                    <span class="section-badge">PF</span>
+                    <span class="section-caption">Dados da Pessoa Física</span>
+                </div>
+
                 <div class="input-group">
                     <label for="f-name"><i class="fa-solid fa-user"></i> Nome Completo</label>
                     <input type="text" id="f-name" required placeholder="Digite seu nome completo">
@@ -96,8 +101,13 @@
 
                 <!-- Campos PJ: só aparecem quando há CNPJ/interesse em estrutura patrimonial -->
                 <div id="f-cnpj-fields" class="cnpj-fields">
+                    <div class="section-heading pj">
+                        <span class="section-badge">PJ</span>
+                        <span class="section-caption">Dados da Pessoa Jurídica</span>
+                    </div>
+
                     <div class="input-group">
-                        <label><i class="fa-solid fa-building-columns"></i> Em qual banco ou corretora sua empresa (PJ) tem conta?</label>
+                        <label><i class="fa-solid fa-building-columns"></i> Em qual banco ou corretora sua empresa tem conta?</label>
                         <div class="selector-grid" id="f-pj-institution-grid">
                             <div class="selector-card" onclick="selectCard('f-pj-institution', 'XP')">XP</div>
                             <div class="selector-card" onclick="selectCard('f-pj-institution', 'BTG')">BTG</div>
@@ -113,7 +123,7 @@
                     </div>
 
                     <div class="input-group">
-                        <label><i class="fa-solid fa-chart-line"></i> Já possui investimentos pela pessoa jurídica (PJ)?</label>
+                        <label><i class="fa-solid fa-chart-line"></i> Já possui investimentos pela empresa?</label>
                         <div class="selector-grid grid-2" id="f-pj-invests-grid">
                             <div class="selector-card" onclick="selectCard('f-pj-invests', 'Sim')">Sim</div>
                             <div class="selector-card" onclick="selectCard('f-pj-invests', 'Não')">Não</div>
@@ -168,7 +178,7 @@
 
                 <!-- Bancos / Corretoras -->
                 <div class="input-group">
-                    <label><i class="fa-solid fa-building-columns"></i> Onde você possui conta atualmente? (Bancos / Corretoras)</label>
+                    <label><i class="fa-solid fa-building-columns"></i> Onde você (pessoa física) possui conta atualmente?</label>
                     <div class="selector-grid" id="f-institution-grid">
                         <div class="selector-card" onclick="selectCard('f-institution', 'XP')">XP</div>
                         <div class="selector-card" onclick="selectCard('f-institution', 'BTG')">BTG</div>
