@@ -117,6 +117,13 @@ iframe.skiptranslate,
         padding: 1.5rem 0.75rem;
         align-items: flex-start;
     }
+
+    .lang-switcher {
+        position: static;
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 0.75rem;
+    }
 }
 
 /* Background Glow Effect */
@@ -170,6 +177,12 @@ iframe.skiptranslate,
 
     .subtitle {
         letter-spacing: 1.5px;
+    }
+
+    .lang-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 0.95rem;
     }
 }
 
