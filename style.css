@@ -53,7 +53,7 @@ iframe.skiptranslate,
 
 /* Seletor de Idioma customizado */
 .lang-switcher {
-    position: absolute;
+    position: fixed;
     top: 1.2rem;
     right: 1.2rem;
     z-index: 50;
@@ -90,6 +90,7 @@ iframe.skiptranslate,
     border: 1px solid var(--border-color);
     border-radius: 10px;
     padding: 0.4rem;
+    width: max-content;
     min-width: 150px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
@@ -120,12 +121,12 @@ iframe.skiptranslate,
     }
 
     .lang-switcher {
-        position: relative;
-        top: auto;
-        right: auto;
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 0.75rem;
+        top: 0.85rem;
+        right: 0.85rem;
+    }
+
+    .container {
+        padding-top: 3rem;
     }
 }
 
