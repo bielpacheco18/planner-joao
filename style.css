@@ -31,6 +31,87 @@ body {
     padding: 2rem 1rem;
 }
 
+/* Esconde a barra e os elementos padrão feios do Google Translate */
+html body {
+    top: 0px !important;
+    position: static !important;
+}
+
+iframe.skiptranslate,
+.goog-te-banner-frame,
+.goog-te-gadget-icon,
+#goog-gt-tt,
+.goog-tooltip,
+.goog-tooltip:hover,
+.goog-text-highlight {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+}
+
+/* Seletor de Idioma customizado */
+.lang-switcher {
+    position: fixed;
+    top: 1.2rem;
+    right: 1.2rem;
+    z-index: 50;
+}
+
+.lang-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--gold);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.lang-btn:hover {
+    border-color: var(--gold);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+}
+
+.lang-menu {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.4rem;
+    min-width: 150px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.lang-menu.open {
+    display: flex;
+}
+
+.lang-option {
+    padding: 0.6rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: var(--transition);
+}
+
+.lang-option:hover {
+    background: rgba(212, 175, 55, 0.08);
+    color: var(--text-primary);
+}
+
 @media (max-width: 580px) {
     body {
         padding: 1.5rem 0.75rem;

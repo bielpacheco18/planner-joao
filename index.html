@@ -19,6 +19,19 @@
     <!-- Background Decoration -->
     <div class="bg-gradient-glow"></div>
 
+    <!-- Seletor de Idioma (Google Translate) -->
+    <div class="lang-switcher" id="lang-switcher">
+        <button class="lang-btn" onclick="toggleLangMenu()" title="Traduzir página">
+            <i class="fa-solid fa-globe"></i>
+        </button>
+        <div class="lang-menu" id="lang-menu">
+            <div class="lang-option" onclick="setLanguage('pt')">🇧🇷 Português</div>
+            <div class="lang-option" onclick="setLanguage('en')">🇺🇸 English</div>
+            <div class="lang-option" onclick="setLanguage('zh-CN')">🇨🇳 中文</div>
+        </div>
+    </div>
+    <div id="google_translate_element" style="display: none;"></div>
+
     <div class="container" id="main-container">
         <!-- Header -->
         <header class="header">
@@ -290,6 +303,17 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <!-- EmailJS (notificação automática por e-mail ao assessor) -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <!-- Google Translate (seletor de idioma) -->
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: "pt",
+                includedLanguages: "pt,en,zh-CN",
+                autoDisplay: false
+            }, "google_translate_element");
+        }
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <!-- Custom JS -->
     <script src="app.js"></script>
 </body>

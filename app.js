@@ -17,11 +17,54 @@ emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 window.addEventListener("DOMContentLoaded", () => {
     checkHashRoute();
     toggleCnpjFields();
+    watchGoogleTranslateBanner();
 });
 
 window.addEventListener("hashchange", () => {
     checkHashRoute();
 });
+
+// Fecha o menu de idiomas ao clicar fora dele
+document.addEventListener("click", (event) => {
+    const switcher = document.getElementById("lang-switcher");
+    if (switcher && !switcher.contains(event.target)) {
+        document.getElementById("lang-menu").classList.remove("open");
+    }
+});
+
+// Alterna a visibilidade do menu de seleção de idioma
+function toggleLangMenu() {
+    document.getElementById("lang-menu").classList.toggle("open");
+}
+
+// Aciona a tradução do Google Translate para o idioma escolhido
+function setLanguage(langCode) {
+    document.getElementById("lang-menu").classList.remove("open");
+
+    if (langCode === "pt") {
+        // Remove o cookie de tradução para voltar ao idioma original da página
+        document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname}`;
+    } else {
+        const value = `/pt/${langCode}`;
+        document.cookie = `googtrans=${value}; path=/;`;
+        document.cookie = `googtrans=${value}; path=/; domain=${window.location.hostname}`;
+    }
+    window.location.reload();
+}
+
+// O Google Translate injeta "top: 40px" inline no <html>/<body> para abrir espaço
+// para a barra dele. Como escondemos a barra via CSS, removemos esse deslocamento
+// sempre que ele tentar reaplicá-lo.
+function watchGoogleTranslateBanner() {
+    const stripOffset = () => {
+        document.body.style.top = "";
+        document.documentElement.style.top = "";
+    };
+    stripOffset();
+    new MutationObserver(stripOffset).observe(document.body, { attributes: true, attributeFilter: ["style"] });
+    new MutationObserver(stripOffset).observe(document.documentElement, { attributes: true, attributeFilter: ["style"] });
+}
 
 // Seleção interativa nos grids de opções (cards)
 function selectCard(inputId, value) {
