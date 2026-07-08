@@ -1,0 +1,52 @@
+<!--
+  Cole este conteúdo no EmailJS: Email Templates -> Create New Template -> aba "Content"
+  Campo "To Email": coloque o e-mail de destino (do João)
+  Campo "Subject": Novo Lead - {{lead_type}} - {{lead_name}}
+-->
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0b0b0c; color: #ffffff; padding: 30px; border-radius: 12px;">
+  <h2 style="color: #d4af37; border-bottom: 2px solid #d4af37; padding-bottom: 10px;">
+    Novo Lead Recebido
+  </h2>
+  <p style="color: #a1a1aa; font-size: 13px; margin-top: -5px;">
+    João Maximiliano | Consultoria Financeira
+  </p>
+
+  <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+    <tr>
+      <td style="padding: 8px 0; color: #a1a1aa; width: 140px;">Tipo</td>
+      <td style="padding: 8px 0; font-weight: bold; color: #d4af37;">{{lead_type}}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px 0; color: #a1a1aa;">Nome</td>
+      <td style="padding: 8px 0; font-weight: bold; color: #d4af37;">{{lead_name}}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px 0; color: #a1a1aa;">E-mail</td>
+      <td style="padding: 8px 0; color: #d4af37;">{{lead_email}}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px 0; color: #a1a1aa;">WhatsApp</td>
+      <td style="padding: 8px 0; color: #d4af37;">{{lead_phone}}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px 0; color: #a1a1aa;">Renda Mensal</td>
+      <td style="padding: 8px 0; color: #d4af37;">{{lead_income}}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px 0; color: #a1a1aa;">Total Investido</td>
+      <td style="padding: 8px 0; color: #d4af37;">{{lead_invested}}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px 0; color: #a1a1aa; vertical-align: top;">Detalhes</td>
+      <td style="padding: 8px 0; color: #d4af37;">{{lead_extra}}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px 0; color: #a1a1aa;">Data</td>
+      <td style="padding: 8px 0; color: #d4af37;">{{lead_date}}</td>
+    </tr>
+  </table>
+
+  <div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid rgba(212,175,55,0.2); font-size: 12px; color: #a1a1aa;">
+    Este e-mail foi gerado automaticamente pelo formulário do site.
+  </div>
+</div>

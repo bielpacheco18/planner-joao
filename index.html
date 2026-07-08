@@ -28,158 +28,28 @@
             <p class="subtitle">CONSULTORIA FINANCEIRA & PLANNER PATRIMONIAL</p>
         </header>
 
-        <!-- Form Selector Tabs -->
-        <div class="tabs-container">
-            <button class="tab-btn active" id="tab-quick" onclick="switchForm('quick')">
-                <i class="fa-solid fa-bolt"></i> Cadastro Rápido
-            </button>
-            <button class="tab-btn" id="tab-full" onclick="switchForm('full')">
-                <i class="fa-solid fa-chart-line"></i> Planejamento Completo
-            </button>
-        </div>
-
         <!-- Forms Container -->
         <div class="form-card">
-            
-            <!-- Quick Form (Multi-step) -->
-            <form id="quick-form" class="form-content active" onsubmit="handleFormSubmit(event, 'quick')">
-                <h2 class="form-title">Qualificação Expressa</h2>
-                <p class="form-disclaimer"><i class="fa-solid fa-shield-halved"></i> Suas informações são confidenciais e usadas apenas para atendimento personalizado.</p>
-
-                <!-- Progress Bar -->
-                <div class="progress-container">
-                    <div class="progress-bar-fill" id="quick-progress-bar" style="width: 25%;"></div>
-                    <span class="progress-text" id="quick-progress-text">Passo 1 de 4</span>
-                </div>
-
-                <!-- Passo 1: Dados Pessoais e Contato -->
-                <div class="form-step active" id="quick-step-1">
-                    <div class="input-group">
-                        <label for="q-name"><i class="fa-solid fa-user"></i> Nome Completo *</label>
-                        <input type="text" id="q-name" required placeholder="Seu nome">
-                    </div>
-
-                    <div class="input-row">
-                        <div class="input-group">
-                            <label for="q-cpf"><i class="fa-solid fa-id-card"></i> CPF *</label>
-                            <input type="text" id="q-cpf" required placeholder="000.000.000-00" oninput="formatCPF(this)">
-                        </div>
-                        <div class="input-group">
-                            <label for="q-birth"><i class="fa-solid fa-calendar-days"></i> Data de Nascimento *</label>
-                            <input type="text" id="q-birth" required placeholder="dd/mm/aaaa" oninput="formatBirthDate(this)">
-                        </div>
-                    </div>
-
-                    <div class="input-row">
-                        <div class="input-group">
-                            <label for="q-email"><i class="fa-solid fa-envelope"></i> E-mail *</label>
-                            <input type="email" id="q-email" required placeholder="voce@email.com">
-                        </div>
-                        <div class="input-group">
-                            <label for="q-phone"><i class="fa-brands fa-whatsapp"></i> Telefone *</label>
-                            <input type="tel" id="q-phone" required placeholder="(00) 00000-0000" oninput="formatPhone(this)">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Passo 2: Diagnóstico Inicial -->
-                <div class="form-step" id="quick-step-2" style="display: none;">
-                    <!-- Hoje você já investe? -->
-                    <div class="input-group">
-                        <label><i class="fa-solid fa-chart-pie"></i> Hoje você já investe com algum banco ou assessor? *</label>
-                        <div class="selector-grid grid-1col" id="q-invest-advisor-grid">
-                            <div class="selector-card" onclick="selectCard('q-invest-advisor', 'Sim, tenho assessor')">Sim, tenho assessor</div>
-                            <div class="selector-card active" onclick="selectCard('q-invest-advisor', 'Sim, mas faço sozinho')">Sim, mas faço sozinho</div>
-                            <div class="selector-card" onclick="selectCard('q-invest-advisor', 'Não invisto ainda')">Não invisto ainda</div>
-                        </div>
-                        <input type="hidden" id="q-invest-advisor" value="Sim, mas faço sozinho">
-                    </div>
-
-                    <!-- Estratégia alinhada? -->
-                    <div class="input-group">
-                        <label><i class="fa-solid fa-compass"></i> Você sente que sua estratégia atual está alinhada com seus objetivos de vida? *</label>
-                        <div class="selector-grid grid-3" id="q-alignment-grid">
-                            <div class="selector-card" onclick="selectCard('q-alignment', 'Totalmente')">Totalmente</div>
-                            <div class="selector-card active" onclick="selectCard('q-alignment', 'Parcialmente')">Parcialmente</div>
-                            <div class="selector-card" onclick="selectCard('q-alignment', 'Não faço ideia')">Não faço ideia</div>
-                        </div>
-                        <input type="hidden" id="q-alignment" value="Parcialmente">
-                    </div>
-                </div>
-
-                <!-- Passo 3: Perfil Patrimonial -->
-                <div class="form-step" id="quick-step-3" style="display: none;">
-                    <!-- Estrutura jurídica/CNPJ -->
-                    <div class="input-group">
-                        <label><i class="fa-solid fa-briefcase"></i> Você tem empresa (CNPJ) ou estrutura patrimonial (holding, offshore, etc.)? *</label>
-                        <div class="selector-grid grid-1col" id="q-cnpj-grid">
-                            <div class="selector-card" onclick="selectCard('q-cnpj', 'Sim')">Sim</div>
-                            <div class="selector-card active" onclick="selectCard('q-cnpj', 'Não, mas tenho interesse')">Não, mas tenho interesse</div>
-                            <div class="selector-card" onclick="selectCard('q-cnpj', 'Não faz sentido pra mim hoje')">Não faz sentido pra mim hoje</div>
-                        </div>
-                        <input type="hidden" id="q-cnpj" value="Não, mas tenho interesse">
-                    </div>
-
-                    <!-- Sabe quanto precisa acumular? -->
-                    <div class="input-group">
-                        <label><i class="fa-solid fa-bullseye"></i> Você sabe hoje quanto precisa acumular para atingir seus objetivos de vida? *</label>
-                        <div class="selector-grid grid-2" id="q-accumulate-grid">
-                            <div class="selector-card active" onclick="selectCard('q-accumulate', 'Sim')">Sim</div>
-                            <div class="selector-card" onclick="selectCard('q-accumulate', 'Não')">Não</div>
-                        </div>
-                        <input type="hidden" id="q-accumulate" value="Sim">
-                    </div>
-                </div>
-
-                <!-- Passo 4: Finanças -->
-                <div class="form-step" id="quick-step-4" style="display: none;">
-                    <!-- Renda mensal -->
-                    <div class="input-group">
-                        <label><i class="fa-solid fa-wallet"></i> Renda mensal *</label>
-                        <div class="selector-grid grid-1col" id="q-income-grid">
-                            <div class="selector-card" onclick="selectCard('q-income', 'De R$ 1.000 a R$ 5.000')">De R$ 1.000 a R$ 5.000</div>
-                            <div class="selector-card active" onclick="selectCard('q-income', 'De R$ 5.000 a R$ 10.000')">De R$ 5.000 a R$ 10.000</div>
-                            <div class="selector-card" onclick="selectCard('q-income', 'R$ 10.000 ou mais')">R$ 10.000 ou mais</div>
-                        </div>
-                        <input type="hidden" id="q-income" value="De R$ 5.000 a R$ 10.000">
-                    </div>
-
-                    <!-- Patrimônio investido -->
-                    <div class="input-group">
-                        <label><i class="fa-solid fa-piggy-bank"></i> Patrimônio investido *</label>
-                        <p class="form-disclaimer" style="margin-bottom: 8px;"><i class="fa-solid fa-circle-info"></i> Atendimento voltado para investidores a partir de R$ 300 mil.</p>
-                        <div class="selector-grid grid-1col" id="q-invested-grid">
-                            <div class="selector-card" onclick="selectCard('q-invested', 'Abaixo de R$ 300 mil')">Abaixo de R$ 300 mil</div>
-                            <div class="selector-card active" onclick="selectCard('q-invested', 'De R$ 300 mil a R$ 1 milhão')">De R$ 300 mil a R$ 1 milhão</div>
-                            <div class="selector-card" onclick="selectCard('q-invested', 'De R$ 1 milhão a R$ 3 milhões')">De R$ 1 milhão a R$ 3 milhões</div>
-                            <div class="selector-card" onclick="selectCard('q-invested', 'Acima de R$ 3 milhões')">Acima de R$ 3 milhões</div>
-                        </div>
-                        <input type="hidden" id="q-invested" value="De R$ 300 mil a R$ 1 milhão">
-                    </div>
-
-                    <!-- Banco / Corretora -->
-                    <div class="input-group">
-                        <label for="q-institution"><i class="fa-solid fa-building-columns"></i> Em qual banco ou corretora você tem conta? *</label>
-                        <input type="text" id="q-institution" required placeholder="Ex: XP, BTG, Itaú, Santander, etc.">
-                    </div>
-                </div>
-
-                <!-- Navigation Buttons -->
-                <div class="step-buttons">
-                    <button type="button" class="admin-btn" id="q-prev-btn" onclick="changeStep(-1)" style="display: none;"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
-                    <button type="button" class="submit-btn" id="q-next-btn" onclick="changeStep(1)" style="margin-top: 0; width: 100%;">Avançar <i class="fa-solid fa-arrow-right"></i></button>
-                    <button type="submit" class="submit-btn" id="q-submit-btn" style="display: none; margin-top: 0; width: 100%;"><i class="fa-brands fa-whatsapp"></i> Enviar Cadastro</button>
-                </div>
-            </form>
 
             <!-- Full Form -->
-            <form id="full-form" class="form-content" onsubmit="handleFormSubmit(event, 'full')">
+            <form id="full-form" class="form-content active" onsubmit="return false;">
                 <h2 class="form-title">Planejamento Estratégico</h2>
                 <p class="form-description">Forneça detalhes adicionais sobre sua realidade financeira para um plano completo.</p>
 
                 <div class="input-group">
                     <label for="f-name"><i class="fa-solid fa-user"></i> Nome Completo</label>
                     <input type="text" id="f-name" required placeholder="Digite seu nome completo">
+                </div>
+
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="f-cpf"><i class="fa-solid fa-id-card"></i> CPF</label>
+                        <input type="text" id="f-cpf" required placeholder="000.000.000-00" oninput="formatCPF(this)">
+                    </div>
+                    <div class="input-group">
+                        <label for="f-birth"><i class="fa-solid fa-calendar-days"></i> Data de Nascimento</label>
+                        <input type="text" id="f-birth" required placeholder="dd/mm/aaaa" oninput="formatBirthDate(this)">
+                    </div>
                 </div>
 
                 <div class="input-row">
@@ -191,6 +61,46 @@
                         <label for="f-phone"><i class="fa-brands fa-whatsapp"></i> WhatsApp</label>
                         <input type="tel" id="f-phone" required placeholder="(11) 99999-9999" oninput="formatPhone(this)">
                     </div>
+                </div>
+
+                <!-- Diagnóstico Inicial -->
+                <div class="input-group">
+                    <label><i class="fa-solid fa-chart-pie"></i> Hoje você já investe com algum banco ou assessor?</label>
+                    <div class="selector-grid grid-1col" id="f-invest-advisor-grid">
+                        <div class="selector-card" onclick="selectCard('f-invest-advisor', 'Sim, tenho assessor')">Sim, tenho assessor</div>
+                        <div class="selector-card active" onclick="selectCard('f-invest-advisor', 'Sim, mas faço sozinho')">Sim, mas faço sozinho</div>
+                        <div class="selector-card" onclick="selectCard('f-invest-advisor', 'Não invisto ainda')">Não invisto ainda</div>
+                    </div>
+                    <input type="hidden" id="f-invest-advisor" value="Sim, mas faço sozinho">
+                </div>
+
+                <div class="input-group">
+                    <label><i class="fa-solid fa-compass"></i> Você sente que sua estratégia atual está alinhada com seus objetivos de vida?</label>
+                    <div class="selector-grid grid-3" id="f-alignment-grid">
+                        <div class="selector-card" onclick="selectCard('f-alignment', 'Totalmente')">Totalmente</div>
+                        <div class="selector-card active" onclick="selectCard('f-alignment', 'Parcialmente')">Parcialmente</div>
+                        <div class="selector-card" onclick="selectCard('f-alignment', 'Não faço ideia')">Não faço ideia</div>
+                    </div>
+                    <input type="hidden" id="f-alignment" value="Parcialmente">
+                </div>
+
+                <div class="input-group">
+                    <label><i class="fa-solid fa-briefcase"></i> Você tem empresa (CNPJ) ou estrutura patrimonial (holding, offshore, etc.)?</label>
+                    <div class="selector-grid grid-1col" id="f-cnpj-grid">
+                        <div class="selector-card" onclick="selectCard('f-cnpj', 'Sim')">Sim</div>
+                        <div class="selector-card active" onclick="selectCard('f-cnpj', 'Não, mas tenho interesse')">Não, mas tenho interesse</div>
+                        <div class="selector-card" onclick="selectCard('f-cnpj', 'Não faz sentido pra mim hoje')">Não faz sentido pra mim hoje</div>
+                    </div>
+                    <input type="hidden" id="f-cnpj" value="Não, mas tenho interesse">
+                </div>
+
+                <div class="input-group">
+                    <label><i class="fa-solid fa-bullseye"></i> Você sabe hoje quanto precisa acumular para atingir seus objetivos de vida?</label>
+                    <div class="selector-grid grid-2" id="f-accumulate-grid">
+                        <div class="selector-card active" onclick="selectCard('f-accumulate', 'Sim')">Sim</div>
+                        <div class="selector-card" onclick="selectCard('f-accumulate', 'Não')">Não</div>
+                    </div>
+                    <input type="hidden" id="f-accumulate" value="Sim">
                 </div>
 
                 <!-- Range Selectors (Renda) -->
@@ -208,6 +118,7 @@
                 <!-- Range Selectors (Investido) -->
                 <div class="input-group">
                     <label><i class="fa-solid fa-piggy-bank"></i> Quanto você possui investido hoje?</label>
+                    <p class="form-disclaimer" style="margin-bottom: 8px;"><i class="fa-solid fa-circle-info"></i> Atendimento voltado para investidores a partir de R$ 300 mil.</p>
                     <div class="selector-grid" id="f-invested-grid">
                         <div class="selector-card" onclick="selectCard('f-invested', 'Até R$ 100.000')">Até R$ 100k</div>
                         <div class="selector-card" onclick="selectCard('f-invested', 'R$ 100.000 a R$ 300.000')">R$ 100k a R$ 300k</div>
@@ -240,9 +151,11 @@
                     <textarea id="f-goals" rows="4" placeholder="Ex: Quero planejar minha aposentadoria para daqui a 15 anos e proteger meu patrimônio contra a inflação. Também pretendo adquirir um imóvel..."></textarea>
                 </div>
 
-                <button type="submit" class="submit-btn">
-                    <i class="fa-brands fa-whatsapp"></i> Enviar Planejamento e Chamar no WhatsApp
-                </button>
+                <!-- Ações finais: e-mail e WhatsApp são independentes -->
+                <div class="final-actions">
+                    <button type="button" class="submit-btn" onclick="sendByEmail()"><i class="fa-solid fa-envelope"></i> Enviar por E-mail</button>
+                    <button type="button" class="submit-btn whatsapp-btn" onclick="sendByWhatsapp()"><i class="fa-brands fa-whatsapp"></i> Falar comigo no WhatsApp</button>
+                </div>
             </form>
 
         </div>
@@ -316,6 +229,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     <!-- Supabase (armazenamento centralizado dos leads) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <!-- EmailJS (notificação automática por e-mail ao assessor) -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <!-- Custom JS -->
     <script src="app.js"></script>
 </body>

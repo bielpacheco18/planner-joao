@@ -426,6 +426,34 @@ input:focus, textarea:focus {
     transform: translateY(0);
 }
 
+/* Ações finais: e-mail e WhatsApp lado a lado */
+.final-actions {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.final-actions .submit-btn {
+    flex: 1;
+    margin-top: 0;
+}
+
+.whatsapp-btn {
+    background: linear-gradient(135deg, #1d9e5b 0%, #25d366 100%);
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.2);
+}
+
+.whatsapp-btn:hover {
+    box-shadow: 0 6px 25px rgba(37, 211, 102, 0.35);
+}
+
+@media (max-width: 480px) {
+    .final-actions {
+        flex-direction: column;
+    }
+}
+
 /* Footer & Links */
 .footer {
     text-align: center;

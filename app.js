@@ -7,6 +7,12 @@ const SUPABASE_URL = "https://dudkonsmprvzmzrejaan.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1ZGtvbnNtcHJ2em16cmVqYWFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MjE0NDgsImV4cCI6MjA5OTA5NzQ0OH0.zslpCQMCFiLd4BrX-uH1fTvSE7d7GTbdG43dZ6cPyRE";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// Credenciais do EmailJS (notificação automática por e-mail ao assessor)
+const EMAILJS_PUBLIC_KEY = "bWTyWHWxUemuQ60B7";
+const EMAILJS_SERVICE_ID = "service_2n5ag1a";
+const EMAILJS_TEMPLATE_ID = "template_2yynbd8";
+emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
 // Inicialização e Monitoramento da Rota Admin por Hash
 window.addEventListener("DOMContentLoaded", () => {
     checkHashRoute();
@@ -15,81 +21,6 @@ window.addEventListener("DOMContentLoaded", () => {
 window.addEventListener("hashchange", () => {
     checkHashRoute();
 });
-
-// Alternância entre abas
-function switchForm(type) {
-    const tabQuick = document.getElementById("tab-quick");
-    const tabFull = document.getElementById("tab-full");
-    const formQuick = document.getElementById("quick-form");
-    const formFull = document.getElementById("full-form");
-
-    if (type === "quick") {
-        tabQuick.classList.add("active");
-        tabFull.classList.remove("active");
-        formQuick.classList.add("active");
-        formFull.classList.remove("active");
-    } else {
-        tabQuick.classList.remove("active");
-        tabFull.classList.add("active");
-        formQuick.classList.remove("active");
-        formFull.classList.add("active");
-    }
-}
-
-// Controle do formulário multi-etapas (Cadastro Rápido)
-const QUICK_TOTAL_STEPS = 4;
-let quickCurrentStep = 1;
-
-function changeStep(direction) {
-    const currentStepEl = document.getElementById(`quick-step-${quickCurrentStep}`);
-
-    if (direction > 0) {
-        const invalidField = currentStepEl.querySelector(":invalid");
-        if (invalidField) {
-            currentStepEl.reportValidity ? currentStepEl.reportValidity() : invalidField.reportValidity();
-            invalidField.focus();
-            return;
-        }
-    }
-
-    const nextStep = quickCurrentStep + direction;
-    if (nextStep < 1 || nextStep > QUICK_TOTAL_STEPS) return;
-
-    currentStepEl.style.display = "none";
-    currentStepEl.classList.remove("active");
-
-    quickCurrentStep = nextStep;
-    const nextStepEl = document.getElementById(`quick-step-${quickCurrentStep}`);
-    nextStepEl.style.display = "block";
-    nextStepEl.classList.add("active");
-
-    updateQuickStepUI();
-}
-
-function updateQuickStepUI() {
-    const progressBar = document.getElementById("quick-progress-bar");
-    const progressText = document.getElementById("quick-progress-text");
-    const prevBtn = document.getElementById("q-prev-btn");
-    const nextBtn = document.getElementById("q-next-btn");
-    const submitBtn = document.getElementById("q-submit-btn");
-
-    progressBar.style.width = `${(quickCurrentStep / QUICK_TOTAL_STEPS) * 100}%`;
-    progressText.textContent = `Passo ${quickCurrentStep} de ${QUICK_TOTAL_STEPS}`;
-
-    prevBtn.style.display = quickCurrentStep > 1 ? "inline-flex" : "none";
-    nextBtn.style.display = quickCurrentStep < QUICK_TOTAL_STEPS ? "block" : "none";
-    submitBtn.style.display = quickCurrentStep === QUICK_TOTAL_STEPS ? "block" : "none";
-}
-
-function resetQuickSteps() {
-    for (let i = 1; i <= QUICK_TOTAL_STEPS; i++) {
-        const stepEl = document.getElementById(`quick-step-${i}`);
-        stepEl.style.display = i === 1 ? "block" : "none";
-        stepEl.classList.toggle("active", i === 1);
-    }
-    quickCurrentStep = 1;
-    updateQuickStepUI();
-}
 
 // Seleção interativa nos grids de opções (cards)
 function selectCard(inputId, value) {
@@ -158,97 +89,97 @@ function formatBirthDate(input) {
     }
 }
 
-// Envio do formulário
-async function handleFormSubmit(event, type) {
-    event.preventDefault();
-    
-    let leadData = {};
-    let messageText = "";
+// Lê os campos do formulário e monta o lead + mensagem de WhatsApp
+function collectLeadData() {
+    const name = document.getElementById("f-name").value;
+    const cpf = document.getElementById("f-cpf").value;
+    const birth = document.getElementById("f-birth").value;
+    const email = document.getElementById("f-email").value;
+    const phone = document.getElementById("f-phone").value;
+    const investAdvisor = document.getElementById("f-invest-advisor").value;
+    const alignment = document.getElementById("f-alignment").value;
+    const cnpj = document.getElementById("f-cnpj").value;
+    const accumulate = document.getElementById("f-accumulate").value;
+    const income = document.getElementById("f-income").value;
+    const invested = document.getElementById("f-invested").value;
+    const institution = document.getElementById("f-institution").value || "Não informado";
+    const risk = document.getElementById("f-risk").value;
+    const goals = document.getElementById("f-goals").value || "Não informado";
 
-    if (type === "quick") {
-        const name = document.getElementById("q-name").value;
-        const email = document.getElementById("q-email").value;
-        const phone = document.getElementById("q-phone").value;
-        const income = document.getElementById("q-income").value;
-        const invested = document.getElementById("q-invested").value;
-        const institution = document.getElementById("q-institution").value || "Não informado";
+    const extra = `CPF: ${cpf} | Nascimento: ${birth} | Já investe: ${investAdvisor} | ` +
+                  `Estratégia alinhada: ${alignment} | CNPJ/Estrutura: ${cnpj} | ` +
+                  `Sabe quanto acumular: ${accumulate} | Contas: ${institution} | ` +
+                  `Perfil: ${risk} | Objetivos: ${goals}`;
 
-        leadData = {
-            date: new Date().toLocaleString("pt-BR"),
-            type: "Rápido",
-            name,
-            email,
-            phone,
-            income,
-            invested,
-            extra: `Contas: ${institution}`
-        };
+    const leadData = {
+        date: new Date().toLocaleString("pt-BR"),
+        type: "Completo",
+        name,
+        email,
+        phone,
+        income,
+        invested,
+        extra
+    };
 
-        messageText = `*Novo Lead - João Maximiliano Consultoria*\n\n` +
-                      `👤 *Nome:* ${name}\n` +
-                      `📧 *E-mail:* ${email}\n` +
-                      `📱 *WhatsApp:* ${phone}\n` +
-                      `💰 *Renda Mensal:* ${income}\n` +
-                      `📈 *Total Investido:* ${invested}\n` +
-                      `🏦 *Bancos/Corretoras:* ${institution}`;
-    } else {
-        const name = document.getElementById("f-name").value;
-        const email = document.getElementById("f-email").value;
-        const phone = document.getElementById("f-phone").value;
-        const income = document.getElementById("f-income").value;
-        const invested = document.getElementById("f-invested").value;
-        const institution = document.getElementById("f-institution").value || "Não informado";
-        const risk = document.getElementById("f-risk").value;
-        const goals = document.getElementById("f-goals").value || "Não informado";
+    const messageText = `*Novo Planejamento Financeiro - João Maximiliano*\n\n` +
+                  `👤 *Nome:* ${name}\n` +
+                  `🆔 *CPF:* ${cpf}\n` +
+                  `🎂 *Nascimento:* ${birth}\n` +
+                  `📧 *E-mail:* ${email}\n` +
+                  `📱 *WhatsApp:* ${phone}\n` +
+                  `📊 *Já investe:* ${investAdvisor}\n` +
+                  `🧭 *Estratégia alinhada:* ${alignment}\n` +
+                  `💼 *CNPJ/Estrutura:* ${cnpj}\n` +
+                  `🎯 *Sabe quanto acumular:* ${accumulate}\n` +
+                  `💰 *Renda Mensal:* ${income}\n` +
+                  `📈 *Total Investido:* ${invested}\n` +
+                  `🏦 *Bancos/Corretoras:* ${institution}\n` +
+                  `🛡️ *Perfil de Risco:* ${risk}\n` +
+                  `🎯 *Objetivos:* ${goals}`;
 
-        leadData = {
-            date: new Date().toLocaleString("pt-BR"),
-            type: "Completo",
-            name,
-            email,
-            phone,
-            income,
-            invested,
-            extra: `Contas: ${institution} | Perfil: ${risk} | Objetivos: ${goals}`
-        };
+    return { leadData, messageText };
+}
 
-        messageText = `*Novo Planejamento Financeiro - João Maximiliano*\n\n` +
-                      `👤 *Nome:* ${name}\n` +
-                      `📧 *E-mail:* ${email}\n` +
-                      `📱 *WhatsApp:* ${phone}\n` +
-                      `💰 *Renda Mensal:* ${income}\n` +
-                      `📈 *Total Investido:* ${invested}\n` +
-                      `🏦 *Bancos/Corretoras:* ${institution}\n` +
-                      `🛡️ *Perfil de Risco:* ${risk}\n` +
-                      `🎯 *Objetivos:* ${goals}`;
+// Confere se os campos obrigatórios do formulário estão preenchidos antes de qualquer ação
+function validateForm() {
+    const formEl = document.getElementById("full-form");
+    const invalidField = formEl.querySelector(":invalid");
+    if (invalidField) {
+        invalidField.reportValidity();
+        invalidField.focus();
+        return false;
     }
+    return true;
+}
 
-    // Gerar link do WhatsApp e abrir IMEDIATAMENTE, ainda no mesmo gesto de clique do usuário.
-    // Navegadores mobile (Safari/iOS, in-app browsers) bloqueiam window.open() se ele
-    // acontecer depois de um await — por isso isso vem antes de salvar no Supabase.
+// Reseta o formulário e os seletores para os valores padrão
+function resetForm() {
+    document.getElementById("full-form").reset();
+    selectCard('f-invest-advisor', 'Sim, mas faço sozinho');
+    selectCard('f-alignment', 'Parcialmente');
+    selectCard('f-cnpj', 'Não, mas tenho interesse');
+    selectCard('f-accumulate', 'Sim');
+    selectCard('f-income', 'R$ 15.000 a R$ 30.000');
+    selectCard('f-invested', 'R$ 300.000 a R$ 1 Milhão');
+    selectCard('f-risk', 'Moderado');
+}
+
+// Ação independente: abrir o WhatsApp com a mensagem pronta (não salva nem envia e-mail)
+function sendByWhatsapp() {
+    if (!validateForm()) return;
+
+    const { messageText } = collectLeadData();
     const encodedText = encodeURIComponent(messageText);
     const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedText}`;
+
+    // Abrir IMEDIATAMENTE, ainda no mesmo gesto de clique do usuário — navegadores
+    // mobile (Safari/iOS, in-app browsers) bloqueiam window.open() após qualquer await.
     const whatsappWindow = window.open(whatsappUrl, "_blank");
 
-    // Salvar lead no Supabase (não bloqueia a abertura do WhatsApp)
-    await saveLead(leadData);
-
-    // Limpar formulários
-    event.target.reset();
-
-    // Resetar seletores para o padrão active
-    if (type === "quick") {
-        selectCard('q-income', 'De R$ 5.000 a R$ 10.000');
-        selectCard('q-invested', 'De R$ 300 mil a R$ 1 milhão');
-        resetQuickSteps();
-    } else {
-        selectCard('f-income', 'R$ 15.000 a R$ 30.000');
-        selectCard('f-invested', 'R$ 300.000 a R$ 1 Milhão');
-        selectCard('f-risk', 'Moderado');
-    }
+    resetForm();
 
     if (!whatsappWindow || whatsappWindow.closed) {
-        // Popup bloqueado: oferecer o link diretamente para o usuário clicar
         const fallback = confirm(
             "Não conseguimos abrir o WhatsApp automaticamente (o navegador bloqueou). Clique OK para abrir o link manualmente."
         );
@@ -256,8 +187,21 @@ async function handleFormSubmit(event, type) {
             window.location.href = whatsappUrl;
         }
     } else {
-        alert("Obrigado pelo preenchimento! Confira a nova aba do WhatsApp e clique em enviar para falar com o assessor.");
+        alert("Confira a nova aba do WhatsApp e clique em enviar para falar com o assessor.");
     }
+}
+
+// Ação independente: salvar o lead no Supabase e notificar o assessor por e-mail (não mexe no WhatsApp)
+async function sendByEmail() {
+    if (!validateForm()) return;
+
+    const { leadData } = collectLeadData();
+
+    await Promise.all([saveLead(leadData), sendLeadEmail(leadData)]);
+
+    resetForm();
+
+    alert("Obrigado pelo preenchimento! Seus dados foram enviados para o assessor por e-mail.");
 }
 
 // Lógica para Salvar Lead
@@ -266,6 +210,24 @@ async function saveLead(lead) {
     if (error) {
         console.error("Erro ao salvar lead no Supabase:", error);
         alert("Não foi possível salvar seus dados agora. Tente novamente em instantes.");
+    }
+}
+
+// Notificação automática por e-mail ao assessor (via EmailJS)
+async function sendLeadEmail(lead) {
+    try {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+            lead_type: lead.type,
+            lead_name: lead.name,
+            lead_email: lead.email,
+            lead_phone: lead.phone,
+            lead_income: lead.income,
+            lead_invested: lead.invested,
+            lead_extra: lead.extra,
+            lead_date: lead.date
+        });
+    } catch (error) {
+        console.error("Erro ao enviar e-mail de notificação via EmailJS:", error);
     }
 }
 
