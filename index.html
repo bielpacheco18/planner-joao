@@ -179,12 +179,10 @@
                 <!-- Range Selectors (Investido) -->
                 <div class="input-group">
                     <label><i class="fa-solid fa-piggy-bank"></i> Quanto você possui investido hoje?</label>
-                    <p class="form-disclaimer" style="margin-bottom: 8px;"><i class="fa-solid fa-circle-info"></i> Atendimento voltado para investidores a partir de R$ 300 mil.</p>
-                    <div class="selector-grid" id="f-invested-grid">
-                        <div class="selector-card" onclick="selectCard('f-invested', 'Até R$ 100.000')">Até R$ 100k</div>
-                        <div class="selector-card" onclick="selectCard('f-invested', 'R$ 100.000 a R$ 300.000')">R$ 100k a R$ 300k</div>
-                        <div class="selector-card" onclick="selectCard('f-invested', 'R$ 300.000 a R$ 1 Milhão')">R$ 300k a R$ 1M</div>
-                        <div class="selector-card" onclick="selectCard('f-invested', 'Acima de R$ 1 Milhão')">Acima de R$ 1M</div>
+                    <p class="form-disclaimer" style="margin-bottom: 8px;"><i class="fa-solid fa-circle-info"></i> Atendimento voltado para investidores de R$ 300 mil a R$ 1 milhão.</p>
+                    <div class="selector-grid grid-2" id="f-invested-grid">
+                        <div class="selector-card" onclick="selectCard('f-invested', 'R$ 300.000 a R$ 500.000')">R$ 300k a R$ 500k</div>
+                        <div class="selector-card" onclick="selectCard('f-invested', 'R$ 500.000 a R$ 1 Milhão')">R$ 500k a R$ 1M</div>
                     </div>
                     <input type="hidden" id="f-invested" value="">
                 </div>
