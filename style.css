@@ -85,6 +85,7 @@ iframe.skiptranslate,
     position: absolute;
     top: 50px;
     right: 0;
+    max-width: calc(100vw - 2.4rem);
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 10px;
@@ -119,7 +120,9 @@ iframe.skiptranslate,
     }
 
     .lang-switcher {
-        position: static;
+        position: relative;
+        top: auto;
+        right: auto;
         display: flex;
         justify-content: flex-end;
         margin-bottom: 0.75rem;
