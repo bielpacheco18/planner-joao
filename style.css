@@ -100,6 +100,9 @@ iframe.skiptranslate,
 }
 
 .lang-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     padding: 0.6rem 0.8rem;
     border-radius: 6px;
     font-size: 0.85rem;
@@ -107,6 +110,14 @@ iframe.skiptranslate,
     cursor: pointer;
     white-space: nowrap;
     transition: var(--transition);
+}
+
+.lang-flag {
+    width: 20px;
+    height: 15px;
+    object-fit: cover;
+    border-radius: 2px;
+    flex-shrink: 0;
 }
 
 .lang-option:hover {
