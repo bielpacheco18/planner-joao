@@ -128,6 +128,36 @@ function formatPhone(input) {
     }
 }
 
+// Formatação do CPF em tempo real: 000.000.000-00
+function formatCPF(input) {
+    let value = input.value.replace(/\D/g, "");
+    if (value.length > 11) value = value.substring(0, 11);
+
+    if (value.length > 9) {
+        input.value = `${value.substring(0, 3)}.${value.substring(3, 6)}.${value.substring(6, 9)}-${value.substring(9)}`;
+    } else if (value.length > 6) {
+        input.value = `${value.substring(0, 3)}.${value.substring(3, 6)}.${value.substring(6)}`;
+    } else if (value.length > 3) {
+        input.value = `${value.substring(0, 3)}.${value.substring(3)}`;
+    } else {
+        input.value = value;
+    }
+}
+
+// Formatação da data de nascimento em tempo real: dd/mm/aaaa
+function formatBirthDate(input) {
+    let value = input.value.replace(/\D/g, "");
+    if (value.length > 8) value = value.substring(0, 8);
+
+    if (value.length > 4) {
+        input.value = `${value.substring(0, 2)}/${value.substring(2, 4)}/${value.substring(4)}`;
+    } else if (value.length > 2) {
+        input.value = `${value.substring(0, 2)}/${value.substring(2)}`;
+    } else {
+        input.value = value;
+    }
+}
+
 // Envio do formulário
 async function handleFormSubmit(event, type) {
     event.preventDefault();

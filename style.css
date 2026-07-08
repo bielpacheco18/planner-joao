@@ -292,14 +292,19 @@ input:focus, textarea:focus {
     margin-top: -1.2rem;
     margin-bottom: 0.5rem;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.5rem;
     border-left: 2px solid var(--gold);
     padding-left: 0.8rem;
 }
 
+.input-group .form-disclaimer {
+    margin-top: 0.2rem;
+}
+
 .form-disclaimer i {
     color: var(--gold);
+    margin-top: 0.15rem;
 }
 
 /* Multi-step progress bar */
