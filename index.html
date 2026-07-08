@@ -68,39 +68,77 @@
                     <label><i class="fa-solid fa-chart-pie"></i> Hoje você já investe com algum banco ou assessor?</label>
                     <div class="selector-grid grid-1col" id="f-invest-advisor-grid">
                         <div class="selector-card" onclick="selectCard('f-invest-advisor', 'Sim, tenho assessor')">Sim, tenho assessor</div>
-                        <div class="selector-card active" onclick="selectCard('f-invest-advisor', 'Sim, mas faço sozinho')">Sim, mas faço sozinho</div>
+                        <div class="selector-card" onclick="selectCard('f-invest-advisor', 'Sim, mas faço sozinho')">Sim, mas faço sozinho</div>
                         <div class="selector-card" onclick="selectCard('f-invest-advisor', 'Não invisto ainda')">Não invisto ainda</div>
                     </div>
-                    <input type="hidden" id="f-invest-advisor" value="Sim, mas faço sozinho">
+                    <input type="hidden" id="f-invest-advisor" value="">
                 </div>
 
                 <div class="input-group">
                     <label><i class="fa-solid fa-compass"></i> Você sente que sua estratégia atual está alinhada com seus objetivos de vida?</label>
                     <div class="selector-grid grid-3" id="f-alignment-grid">
                         <div class="selector-card" onclick="selectCard('f-alignment', 'Totalmente')">Totalmente</div>
-                        <div class="selector-card active" onclick="selectCard('f-alignment', 'Parcialmente')">Parcialmente</div>
+                        <div class="selector-card" onclick="selectCard('f-alignment', 'Parcialmente')">Parcialmente</div>
                         <div class="selector-card" onclick="selectCard('f-alignment', 'Não faço ideia')">Não faço ideia</div>
                     </div>
-                    <input type="hidden" id="f-alignment" value="Parcialmente">
+                    <input type="hidden" id="f-alignment" value="">
                 </div>
 
                 <div class="input-group">
                     <label><i class="fa-solid fa-briefcase"></i> Você tem empresa (CNPJ) ou estrutura patrimonial (holding, offshore, etc.)?</label>
                     <div class="selector-grid grid-1col" id="f-cnpj-grid">
-                        <div class="selector-card" onclick="selectCard('f-cnpj', 'Sim')">Sim</div>
-                        <div class="selector-card active" onclick="selectCard('f-cnpj', 'Não, mas tenho interesse')">Não, mas tenho interesse</div>
-                        <div class="selector-card" onclick="selectCard('f-cnpj', 'Não faz sentido pra mim hoje')">Não faz sentido pra mim hoje</div>
+                        <div class="selector-card" onclick="selectCard('f-cnpj', 'Sim'); toggleCnpjFields();">Sim</div>
+                        <div class="selector-card" onclick="selectCard('f-cnpj', 'Não, mas tenho interesse'); toggleCnpjFields();">Não, mas tenho interesse</div>
+                        <div class="selector-card" onclick="selectCard('f-cnpj', 'Não faz sentido pra mim hoje'); toggleCnpjFields();">Não faz sentido pra mim hoje</div>
                     </div>
-                    <input type="hidden" id="f-cnpj" value="Não, mas tenho interesse">
+                    <input type="hidden" id="f-cnpj" value="">
+                </div>
+
+                <!-- Campos PJ: só aparecem quando há CNPJ/interesse em estrutura patrimonial -->
+                <div id="f-cnpj-fields" class="cnpj-fields">
+                    <div class="input-group">
+                        <label><i class="fa-solid fa-building-columns"></i> Em qual banco ou corretora sua empresa (PJ) tem conta?</label>
+                        <div class="selector-grid" id="f-pj-institution-grid">
+                            <div class="selector-card" onclick="selectCard('f-pj-institution', 'XP')">XP</div>
+                            <div class="selector-card" onclick="selectCard('f-pj-institution', 'BTG')">BTG</div>
+                            <div class="selector-card" onclick="selectCard('f-pj-institution', 'Itaú')">Itaú</div>
+                            <div class="selector-card" onclick="selectCard('f-pj-institution', 'Santander')">Santander</div>
+                            <div class="selector-card" onclick="selectCard('f-pj-institution', 'Bradesco')">Bradesco</div>
+                            <div class="selector-card" onclick="selectCard('f-pj-institution', 'Banco do Brasil')">Banco do Brasil</div>
+                            <div class="selector-card" onclick="selectCard('f-pj-institution', 'Nubank')">Nubank</div>
+                            <div class="selector-card" onclick="selectCard('f-pj-institution', 'Outro')">Outro</div>
+                        </div>
+                        <input type="hidden" id="f-pj-institution" value="">
+                        <input type="text" id="f-pj-institution-other" class="other-input" placeholder="Qual banco ou corretora?" style="display: none;">
+                    </div>
+
+                    <div class="input-group">
+                        <label><i class="fa-solid fa-chart-line"></i> Já possui investimentos pela pessoa jurídica (PJ)?</label>
+                        <div class="selector-grid grid-2" id="f-pj-invests-grid">
+                            <div class="selector-card" onclick="selectCard('f-pj-invests', 'Sim')">Sim</div>
+                            <div class="selector-card" onclick="selectCard('f-pj-invests', 'Não')">Não</div>
+                        </div>
+                        <input type="hidden" id="f-pj-invests" value="">
+                    </div>
+
+                    <div class="input-group">
+                        <label><i class="fa-solid fa-sitemap"></i> Já possui holding constituída?</label>
+                        <div class="selector-grid grid-3" id="f-pj-holding-grid">
+                            <div class="selector-card" onclick="selectCard('f-pj-holding', 'Sim')">Sim</div>
+                            <div class="selector-card" onclick="selectCard('f-pj-holding', 'Não, mas tenho interesse')">Não, mas tenho interesse</div>
+                            <div class="selector-card" onclick="selectCard('f-pj-holding', 'Não')">Não</div>
+                        </div>
+                        <input type="hidden" id="f-pj-holding" value="">
+                    </div>
                 </div>
 
                 <div class="input-group">
                     <label><i class="fa-solid fa-bullseye"></i> Você sabe hoje quanto precisa acumular para atingir seus objetivos de vida?</label>
                     <div class="selector-grid grid-2" id="f-accumulate-grid">
-                        <div class="selector-card active" onclick="selectCard('f-accumulate', 'Sim')">Sim</div>
+                        <div class="selector-card" onclick="selectCard('f-accumulate', 'Sim')">Sim</div>
                         <div class="selector-card" onclick="selectCard('f-accumulate', 'Não')">Não</div>
                     </div>
-                    <input type="hidden" id="f-accumulate" value="Sim">
+                    <input type="hidden" id="f-accumulate" value="">
                 </div>
 
                 <!-- Range Selectors (Renda) -->
@@ -109,10 +147,10 @@
                     <div class="selector-grid" id="f-income-grid">
                         <div class="selector-card" onclick="selectCard('f-income', 'Até R$ 5.000')">Até R$ 5.000</div>
                         <div class="selector-card" onclick="selectCard('f-income', 'R$ 5.000 a R$ 15.000')">R$ 5k a R$ 15k</div>
-                        <div class="selector-card active" onclick="selectCard('f-income', 'R$ 15.000 a R$ 30.000')">R$ 15k a R$ 30k</div>
+                        <div class="selector-card" onclick="selectCard('f-income', 'R$ 15.000 a R$ 30.000')">R$ 15k a R$ 30k</div>
                         <div class="selector-card" onclick="selectCard('f-income', 'Acima de R$ 30.000')">Acima de R$ 30k</div>
                     </div>
-                    <input type="hidden" id="f-income" value="R$ 15.000 a R$ 30.000">
+                    <input type="hidden" id="f-income" value="">
                 </div>
 
                 <!-- Range Selectors (Investido) -->
@@ -122,16 +160,27 @@
                     <div class="selector-grid" id="f-invested-grid">
                         <div class="selector-card" onclick="selectCard('f-invested', 'Até R$ 100.000')">Até R$ 100k</div>
                         <div class="selector-card" onclick="selectCard('f-invested', 'R$ 100.000 a R$ 300.000')">R$ 100k a R$ 300k</div>
-                        <div class="selector-card active" onclick="selectCard('f-invested', 'R$ 300.000 a R$ 1 Milhão')">R$ 300k a R$ 1M</div>
+                        <div class="selector-card" onclick="selectCard('f-invested', 'R$ 300.000 a R$ 1 Milhão')">R$ 300k a R$ 1M</div>
                         <div class="selector-card" onclick="selectCard('f-invested', 'Acima de R$ 1 Milhão')">Acima de R$ 1M</div>
                     </div>
-                    <input type="hidden" id="f-invested" value="R$ 300.000 a R$ 1 Milhão">
+                    <input type="hidden" id="f-invested" value="">
                 </div>
 
                 <!-- Bancos / Corretoras -->
                 <div class="input-group">
-                    <label for="f-institution"><i class="fa-solid fa-building-columns"></i> Onde você possui conta atualmente? (Bancos / Corretoras)</label>
-                    <input type="text" id="f-institution" placeholder="Ex: XP, BTG, Itaú, Santander, etc.">
+                    <label><i class="fa-solid fa-building-columns"></i> Onde você possui conta atualmente? (Bancos / Corretoras)</label>
+                    <div class="selector-grid" id="f-institution-grid">
+                        <div class="selector-card" onclick="selectCard('f-institution', 'XP')">XP</div>
+                        <div class="selector-card" onclick="selectCard('f-institution', 'BTG')">BTG</div>
+                        <div class="selector-card" onclick="selectCard('f-institution', 'Itaú')">Itaú</div>
+                        <div class="selector-card" onclick="selectCard('f-institution', 'Santander')">Santander</div>
+                        <div class="selector-card" onclick="selectCard('f-institution', 'Bradesco')">Bradesco</div>
+                        <div class="selector-card" onclick="selectCard('f-institution', 'Banco do Brasil')">Banco do Brasil</div>
+                        <div class="selector-card" onclick="selectCard('f-institution', 'Nubank')">Nubank</div>
+                        <div class="selector-card" onclick="selectCard('f-institution', 'Outro')">Outro</div>
+                    </div>
+                    <input type="hidden" id="f-institution" value="">
+                    <input type="text" id="f-institution-other" class="other-input" placeholder="Qual banco ou corretora?" style="display: none;">
                 </div>
 
                 <!-- Perfil de Risco -->
@@ -139,10 +188,10 @@
                     <label><i class="fa-solid fa-gauge-high"></i> Como se considera em relação a riscos?</label>
                     <div class="selector-grid grid-3" id="f-risk-grid">
                         <div class="selector-card" onclick="selectCard('f-risk', 'Conservador')">Conservador</div>
-                        <div class="selector-card active" onclick="selectCard('f-risk', 'Moderado')">Moderado</div>
+                        <div class="selector-card" onclick="selectCard('f-risk', 'Moderado')">Moderado</div>
                         <div class="selector-card" onclick="selectCard('f-risk', 'Arrojado')">Arrojado</div>
                     </div>
-                    <input type="hidden" id="f-risk" value="Moderado">
+                    <input type="hidden" id="f-risk" value="">
                 </div>
 
                 <!-- Objetivos e Prazos -->

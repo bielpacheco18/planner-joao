@@ -16,6 +16,7 @@ emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 // Inicialização e Monitoramento da Rota Admin por Hash
 window.addEventListener("DOMContentLoaded", () => {
     checkHashRoute();
+    toggleCnpjFields();
 });
 
 window.addEventListener("hashchange", () => {
@@ -34,13 +35,31 @@ function selectCard(inputId, value) {
 
     const cards = gridEl.querySelectorAll(".selector-card");
     cards.forEach(card => {
-        if (card.textContent.trim() === value || 
+        if (card.textContent.trim() === value ||
             card.getAttribute("onclick").includes(value)) {
             card.classList.add("active");
         } else {
             card.classList.remove("active");
         }
     });
+
+    // Se o grid tiver opção "Outro", mostra/esconde o campo de texto livre correspondente
+    const otherInput = document.getElementById(inputId + "-other");
+    if (otherInput) {
+        if (value === "Outro") {
+            otherInput.style.display = "block";
+        } else {
+            otherInput.style.display = "none";
+            otherInput.value = "";
+        }
+    }
+}
+
+// Mostra os campos de PJ (banco, investimentos, holding) só quando há CNPJ ou interesse nele
+function toggleCnpjFields() {
+    const cnpjValue = document.getElementById("f-cnpj").value;
+    const cnpjFields = document.getElementById("f-cnpj-fields");
+    cnpjFields.style.display = cnpjValue === "Não faz sentido pra mim hoje" ? "none" : "flex";
 }
 
 // Formatação do número de telefone em tempo real: (XX) XXXXX-XXXX
@@ -99,15 +118,24 @@ function collectLeadData() {
     const investAdvisor = document.getElementById("f-invest-advisor").value;
     const alignment = document.getElementById("f-alignment").value;
     const cnpj = document.getElementById("f-cnpj").value;
+    const pjShowingFields = cnpj !== "Não faz sentido pra mim hoje";
+    const pjInstitutionRaw = document.getElementById("f-pj-institution").value;
+    const pjInstitution = pjShowingFields
+        ? (pjInstitutionRaw === "Outro" ? document.getElementById("f-pj-institution-other").value : pjInstitutionRaw)
+        : "N/A";
+    const pjInvests = pjShowingFields ? document.getElementById("f-pj-invests").value : "N/A";
+    const pjHolding = pjShowingFields ? document.getElementById("f-pj-holding").value : "N/A";
     const accumulate = document.getElementById("f-accumulate").value;
     const income = document.getElementById("f-income").value;
     const invested = document.getElementById("f-invested").value;
-    const institution = document.getElementById("f-institution").value || "Não informado";
+    const institutionRaw = document.getElementById("f-institution").value;
+    const institution = institutionRaw === "Outro" ? document.getElementById("f-institution-other").value : institutionRaw;
     const risk = document.getElementById("f-risk").value;
     const goals = document.getElementById("f-goals").value || "Não informado";
 
     const extra = `CPF: ${cpf} | Nascimento: ${birth} | Já investe: ${investAdvisor} | ` +
                   `Estratégia alinhada: ${alignment} | CNPJ/Estrutura: ${cnpj} | ` +
+                  `Banco PJ: ${pjInstitution} | Investimentos PJ: ${pjInvests} | Holding: ${pjHolding} | ` +
                   `Sabe quanto acumular: ${accumulate} | Contas: ${institution} | ` +
                   `Perfil: ${risk} | Objetivos: ${goals}`;
 
@@ -131,6 +159,11 @@ function collectLeadData() {
                   `📊 *Já investe:* ${investAdvisor}\n` +
                   `🧭 *Estratégia alinhada:* ${alignment}\n` +
                   `💼 *CNPJ/Estrutura:* ${cnpj}\n` +
+                  (pjShowingFields ?
+                    `🏦 *Banco PJ:* ${pjInstitution}\n` +
+                    `📈 *Investimentos PJ:* ${pjInvests}\n` +
+                    `🏛️ *Holding:* ${pjHolding}\n`
+                  : "") +
                   `🎯 *Sabe quanto acumular:* ${accumulate}\n` +
                   `💰 *Renda Mensal:* ${income}\n` +
                   `📈 *Total Investido:* ${invested}\n` +
@@ -141,6 +174,19 @@ function collectLeadData() {
     return { leadData, messageText };
 }
 
+// Seletores obrigatórios (id do hidden input + rótulo amigável para a mensagem de erro).
+// Os campos PJ (f-pj-*) são validados à parte, pois só são obrigatórios quando visíveis.
+const REQUIRED_SELECTORS = [
+    ["f-invest-advisor", "Hoje você já investe com algum banco ou assessor?"],
+    ["f-alignment", "Sua estratégia atual está alinhada com seus objetivos de vida?"],
+    ["f-cnpj", "Você tem empresa (CNPJ) ou estrutura patrimonial?"],
+    ["f-accumulate", "Você sabe quanto precisa acumular para seus objetivos?"],
+    ["f-income", "Qual é a sua Renda Mensal aproximada?"],
+    ["f-invested", "Quanto você possui investido hoje?"],
+    ["f-institution", "Onde você possui conta atualmente?"],
+    ["f-risk", "Como se considera em relação a riscos?"]
+];
+
 // Confere se os campos obrigatórios do formulário estão preenchidos antes de qualquer ação
 function validateForm() {
     const formEl = document.getElementById("full-form");
@@ -150,19 +196,65 @@ function validateForm() {
         invalidField.focus();
         return false;
     }
+
+    for (const [id, label] of REQUIRED_SELECTORS) {
+        if (!document.getElementById(id).value) {
+            alert(`Por favor, selecione uma opção para: "${label}"`);
+            document.getElementById(id + "-grid").scrollIntoView({ behavior: "smooth", block: "center" });
+            return false;
+        }
+    }
+
+    const cnpjValue = document.getElementById("f-cnpj").value;
+    if (cnpjValue !== "Não faz sentido pra mim hoje") {
+        const pjSelectors = [
+            ["f-pj-institution", "Em qual banco ou corretora sua empresa (PJ) tem conta?"],
+            ["f-pj-invests", "Já possui investimentos pela pessoa jurídica (PJ)?"],
+            ["f-pj-holding", "Já possui holding constituída?"]
+        ];
+        for (const [id, label] of pjSelectors) {
+            if (!document.getElementById(id).value) {
+                alert(`Por favor, selecione uma opção para: "${label}"`);
+                document.getElementById(id + "-grid").scrollIntoView({ behavior: "smooth", block: "center" });
+                return false;
+            }
+        }
+    }
+
+    if (document.getElementById("f-institution").value === "Outro" && !document.getElementById("f-institution-other").value.trim()) {
+        alert('Por favor, informe o nome do banco/corretora em "Onde você possui conta atualmente?"');
+        document.getElementById("f-institution-other").focus();
+        return false;
+    }
+
+    if (cnpjValue !== "Não faz sentido pra mim hoje" &&
+        document.getElementById("f-pj-institution").value === "Outro" &&
+        !document.getElementById("f-pj-institution-other").value.trim()) {
+        alert('Por favor, informe o nome do banco/corretora PJ em "Em qual banco ou corretora sua empresa (PJ) tem conta?"');
+        document.getElementById("f-pj-institution-other").focus();
+        return false;
+    }
+
     return true;
 }
 
-// Reseta o formulário e os seletores para os valores padrão
+// IDs de todos os seletores do formulário, usados para limpar o estado ao resetar
+const ALL_SELECTOR_IDS = [
+    "f-invest-advisor", "f-alignment", "f-cnpj",
+    "f-pj-institution", "f-pj-invests", "f-pj-holding",
+    "f-accumulate", "f-income", "f-invested", "f-institution", "f-risk"
+];
+
+// Reseta o formulário e os seletores para o estado vazio (nenhuma opção pré-selecionada)
 function resetForm() {
     document.getElementById("full-form").reset();
-    selectCard('f-invest-advisor', 'Sim, mas faço sozinho');
-    selectCard('f-alignment', 'Parcialmente');
-    selectCard('f-cnpj', 'Não, mas tenho interesse');
-    selectCard('f-accumulate', 'Sim');
-    selectCard('f-income', 'R$ 15.000 a R$ 30.000');
-    selectCard('f-invested', 'R$ 300.000 a R$ 1 Milhão');
-    selectCard('f-risk', 'Moderado');
+    ALL_SELECTOR_IDS.forEach(id => {
+        document.getElementById(id).value = "";
+        document.querySelectorAll(`#${id}-grid .selector-card`).forEach(card => card.classList.remove("active"));
+    });
+    document.getElementById("f-institution-other").style.display = "none";
+    document.getElementById("f-pj-institution-other").style.display = "none";
+    toggleCnpjFields();
 }
 
 // Ação independente: abrir o WhatsApp com a mensagem pronta (não salva nem envia e-mail)
