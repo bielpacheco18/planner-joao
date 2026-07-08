@@ -70,7 +70,10 @@ function watchGoogleTranslateBanner() {
 function selectCard(inputId, value) {
     const inputEl = document.getElementById(inputId);
     if (!inputEl) return;
-    inputEl.value = value;
+
+    // Clicar de novo na opção já selecionada desmarca ela
+    const deselecting = inputEl.value === value;
+    inputEl.value = deselecting ? "" : value;
 
     const gridId = inputId + "-grid";
     const gridEl = document.getElementById(gridId);
@@ -78,8 +81,8 @@ function selectCard(inputId, value) {
 
     const cards = gridEl.querySelectorAll(".selector-card");
     cards.forEach(card => {
-        if (card.textContent.trim() === value ||
-            card.getAttribute("onclick").includes(value)) {
+        if (!deselecting && (card.textContent.trim() === value ||
+            card.getAttribute("onclick").includes(value))) {
             card.classList.add("active");
         } else {
             card.classList.remove("active");
@@ -89,7 +92,7 @@ function selectCard(inputId, value) {
     // Se o grid tiver opção "Outro", mostra/esconde o campo de texto livre correspondente
     const otherInput = document.getElementById(inputId + "-other");
     if (otherInput) {
-        if (value === "Outro") {
+        if (!deselecting && value === "Outro") {
             otherInput.style.display = "block";
         } else {
             otherInput.style.display = "none";
