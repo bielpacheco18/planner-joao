@@ -19,6 +19,7 @@ window.addEventListener("DOMContentLoaded", () => {
     toggleCnpjFields();
     watchGoogleTranslateBanner();
     initProgressBar();
+    captureLeadSource();
 });
 
 window.addEventListener("hashchange", () => {
@@ -65,6 +66,39 @@ function watchGoogleTranslateBanner() {
     stripOffset();
     new MutationObserver(stripOffset).observe(document.body, { attributes: true, attributeFilter: ["style"] });
     new MutationObserver(stripOffset).observe(document.documentElement, { attributes: true, attributeFilter: ["style"] });
+}
+
+// Captura utm_source/medium/campaign da URL (ou o referrer, como fallback) e guarda
+// na sessão para sobreviver a navegação/reload até o envio do formulário.
+function captureLeadSource() {
+    const params = new URLSearchParams(window.location.search);
+    const hasUtm = params.get("utm_source") || params.get("utm_medium") || params.get("utm_campaign");
+
+    if (hasUtm) {
+        sessionStorage.setItem("lead_source", JSON.stringify({
+            utm_source: params.get("utm_source") || "",
+            utm_medium: params.get("utm_medium") || "",
+            utm_campaign: params.get("utm_campaign") || ""
+        }));
+    } else if (!sessionStorage.getItem("lead_source")) {
+        const referrer = document.referrer ? new URL(document.referrer).hostname : "";
+        sessionStorage.setItem("lead_source", JSON.stringify({
+            utm_source: referrer || "Direto",
+            utm_medium: "",
+            utm_campaign: ""
+        }));
+    }
+}
+
+// Monta uma descrição legível da origem do lead a partir do que foi capturado na sessão
+function getLeadSourceLabel() {
+    try {
+        const source = JSON.parse(sessionStorage.getItem("lead_source") || "{}");
+        const parts = [source.utm_source, source.utm_medium, source.utm_campaign].filter(Boolean);
+        return parts.length ? parts.join(" / ") : "Direto/Não identificado";
+    } catch {
+        return "Direto/Não identificado";
+    }
 }
 
 // Seleção interativa nos grids de opções (cards)
@@ -228,12 +262,13 @@ function collectLeadData() {
     const institution = institutionRaw === "Outro" ? document.getElementById("f-institution-other").value : institutionRaw;
     const risk = document.getElementById("f-risk").value;
     const goals = document.getElementById("f-goals").value || "Não informado";
+    const source = getLeadSourceLabel();
 
     const extra = `CPF: ${cpf} | Nascimento: ${birth} | Já investe: ${investAdvisor} | ` +
                   `Estratégia alinhada: ${alignment} | CNPJ/Estrutura: ${cnpj} | ` +
                   `Banco PJ: ${pjInstitution} | Investimentos PJ: ${pjInvests} | Holding: ${pjHolding} | ` +
                   `Sabe quanto acumular: ${accumulate} | Contas: ${institution} | ` +
-                  `Perfil: ${risk} | Objetivos: ${goals}`;
+                  `Perfil: ${risk} | Objetivos: ${goals} | Origem: ${source}`;
 
     const leadData = {
         date: new Date().toLocaleString("pt-BR"),
@@ -265,7 +300,8 @@ function collectLeadData() {
                   `📈 *Total Investido:* ${invested}\n` +
                   `🏦 *Bancos/Corretoras:* ${institution}\n` +
                   `🛡️ *Perfil de Risco:* ${risk}\n` +
-                  `🎯 *Objetivos:* ${goals}`;
+                  `🎯 *Objetivos:* ${goals}\n` +
+                  `📍 *Origem:* ${source}`;
 
     return { leadData, messageText };
 }
