@@ -619,6 +619,33 @@ input:focus, textarea:focus {
     margin-top: 1rem;
 }
 
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--gold-dark);
+    color: var(--gold);
+    font-size: 1rem;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.social-link:hover {
+    background: var(--gold-dark);
+    color: var(--bg-dark);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
 .admin-link-wrapper a {
     color: var(--gold-dark);
     text-decoration: none;
