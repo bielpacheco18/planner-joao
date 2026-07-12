@@ -68,6 +68,33 @@ function watchGoogleTranslateBanner() {
     new MutationObserver(stripOffset).observe(document.documentElement, { attributes: true, attributeFilter: ["style"] });
 }
 
+// Domínios conhecidos de redes sociais/mensageiros, mapeados para um nome amigável.
+// Cobre os hosts que cada rede costuma usar como referrer (inclusive versões
+// mobile/encurtadas), para reconhecer a origem mesmo sem utm_source na URL.
+const KNOWN_REFERRER_DOMAINS = [
+    [/(^|\.)instagram\.com$/, "Instagram"],
+    [/(^|\.)l\.instagram\.com$/, "Instagram"],
+    [/(^|\.)linkedin\.com$/, "LinkedIn"],
+    [/(^|\.)lnkd\.in$/, "LinkedIn"],
+    [/(^|\.)facebook\.com$/, "Facebook"],
+    [/(^|\.)fb\.com$/, "Facebook"],
+    [/(^|\.)wa\.me$/, "WhatsApp"],
+    [/(^|\.)whatsapp\.com$/, "WhatsApp"],
+    [/(^|\.)web\.whatsapp\.com$/, "WhatsApp"],
+    [/(^|\.)twitter\.com$/, "Twitter/X"],
+    [/(^|\.)x\.com$/, "Twitter/X"],
+    [/(^|\.)t\.co$/, "Twitter/X"],
+    [/(^|\.)youtube\.com$/, "YouTube"],
+    [/(^|\.)google\.[a-z.]+$/, "Google"],
+    [/(^|\.)tiktok\.com$/, "TikTok"]
+];
+
+// Converte um hostname de referrer em um rótulo amigável, se reconhecido
+function labelForReferrerHost(hostname) {
+    const match = KNOWN_REFERRER_DOMAINS.find(([pattern]) => pattern.test(hostname));
+    return match ? match[1] : hostname;
+}
+
 // Captura utm_source/medium/campaign da URL (ou o referrer, como fallback) e guarda
 // na sessão para sobreviver a navegação/reload até o envio do formulário.
 function captureLeadSource() {
@@ -81,9 +108,16 @@ function captureLeadSource() {
             utm_campaign: params.get("utm_campaign") || ""
         }));
     } else if (!sessionStorage.getItem("lead_source")) {
-        const referrer = document.referrer ? new URL(document.referrer).hostname : "";
+        let referrerLabel = "";
+        if (document.referrer) {
+            try {
+                referrerLabel = labelForReferrerHost(new URL(document.referrer).hostname);
+            } catch {
+                referrerLabel = "";
+            }
+        }
         sessionStorage.setItem("lead_source", JSON.stringify({
-            utm_source: referrer || "Direto",
+            utm_source: referrerLabel || "Direto",
             utm_medium: "",
             utm_campaign: ""
         }));
