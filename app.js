@@ -18,6 +18,7 @@ window.addEventListener("DOMContentLoaded", () => {
     checkHashRoute();
     toggleCnpjFields();
     watchGoogleTranslateBanner();
+    initProgressBar();
 });
 
 window.addEventListener("hashchange", () => {
@@ -106,6 +107,55 @@ function toggleCnpjFields() {
     const cnpjValue = document.getElementById("f-cnpj").value;
     const cnpjFields = document.getElementById("f-cnpj-fields");
     cnpjFields.style.display = cnpjValue === "Não faz sentido pra mim hoje" ? "none" : "flex";
+    updateProgressBar();
+}
+
+// Campos de texto/data obrigatórios do formulário (fora dos seletores em cards)
+const REQUIRED_TEXT_FIELDS = ["f-name", "f-cpf", "f-birth", "f-email", "f-phone"];
+
+// Campos opcionais que ainda assim contam para a barra de progresso
+const PROGRESS_ONLY_FIELDS = ["f-goals"];
+
+// Seletores que só contam como obrigatórios quando os campos de PJ estão visíveis
+const PJ_SELECTOR_IDS = ["f-pj-institution", "f-pj-invests", "f-pj-holding"];
+
+// Recalcula quantos campos obrigatórios já foram preenchidos e atualiza a barra visual
+function updateProgressBar() {
+    const fillEl = document.getElementById("progress-fill");
+    const labelEl = document.getElementById("progress-label");
+    if (!fillEl || !labelEl) return;
+
+    const cnpjValue = document.getElementById("f-cnpj").value;
+    const pjVisible = cnpjValue !== "Não faz sentido pra mim hoje";
+
+    let requiredIds = REQUIRED_TEXT_FIELDS.concat(REQUIRED_SELECTORS.map(([id]) => id));
+    if (pjVisible) {
+        requiredIds = requiredIds.concat(PJ_SELECTOR_IDS);
+    }
+    requiredIds = requiredIds.concat(PROGRESS_ONLY_FIELDS);
+
+    const filledCount = requiredIds.filter(id => {
+        const el = document.getElementById(id);
+        return el && el.value.trim() !== "";
+    }).length;
+
+    const percent = Math.round((filledCount / requiredIds.length) * 100);
+    fillEl.style.width = `${percent}%`;
+    labelEl.textContent = `${percent}% preenchido`;
+}
+
+// Liga a barra de progresso aos eventos de digitação e seleção do formulário
+function initProgressBar() {
+    const formEl = document.getElementById("full-form");
+    if (!formEl) return;
+    formEl.addEventListener("input", updateProgressBar);
+    formEl.addEventListener("click", (event) => {
+        if (event.target.closest(".selector-card")) {
+            // O clique no card ainda não atualizou o hidden input neste tick; adia para depois.
+            setTimeout(updateProgressBar, 0);
+        }
+    });
+    updateProgressBar();
 }
 
 // Formatação do número de telefone em tempo real: (XX) XXXXX-XXXX
@@ -301,6 +351,7 @@ function resetForm() {
     document.getElementById("f-institution-other").style.display = "none";
     document.getElementById("f-pj-institution-other").style.display = "none";
     toggleCnpjFields();
+    updateProgressBar();
 }
 
 // Ação independente: abrir o WhatsApp com a mensagem pronta (não salva nem envia e-mail)
