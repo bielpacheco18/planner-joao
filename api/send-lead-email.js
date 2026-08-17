@@ -1,7 +1,7 @@
 // Recebe os dados de um novo lead do front-end e notifica o assessor por e-mail via Resend.
 // A API key fica só no servidor (variável de ambiente RESEND_API_KEY), nunca exposta no navegador.
 
-const NOTIFY_EMAIL = "Joaopedromaximiliano@gmail.com";
+const NOTIFY_EMAIL = "joaopedromaximiliano@gmail.com";
 
 module.exports = async function handler(req, res) {
     if (req.method !== "POST") {

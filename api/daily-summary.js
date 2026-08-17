@@ -4,7 +4,7 @@
 const SUPABASE_URL = "https://dudkonsmprvzmzrejaan.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1ZGtvbnNtcHJ2em16cmVqYWFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MjE0NDgsImV4cCI6MjA5OTA5NzQ0OH0.zslpCQMCFiLd4BrX-uH1fTvSE7d7GTbdG43dZ6cPyRE";
 
-const DAILY_SUMMARY_EMAIL = "Joaopedromaximiliano@gmail.com";
+const DAILY_SUMMARY_EMAIL = "joaopedromaximiliano@gmail.com";
 const TIMEZONE = "America/Sao_Paulo";
 
 function getYesterdayRangeUTC() {
