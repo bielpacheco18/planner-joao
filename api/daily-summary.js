@@ -1,12 +1,8 @@
 // Job diário (Vercel Cron): conta as aberturas do link no dia anterior e envia
-// um e-mail de resumo via EmailJS. Configurado em vercel.json.
+// um e-mail de resumo via Resend. Configurado em vercel.json.
 
 const SUPABASE_URL = "https://dudkonsmprvzmzrejaan.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1ZGtvbnNtcHJ2em16cmVqYWFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MjE0NDgsImV4cCI6MjA5OTA5NzQ0OH0.zslpCQMCFiLd4BrX-uH1fTvSE7d7GTbdG43dZ6cPyRE";
-
-const EMAILJS_SERVICE_ID = "service_2n5ag1a";
-const EMAILJS_TEMPLATE_ID = "template_r83cgt3";
-const EMAILJS_PUBLIC_KEY = "bWTyWHWxUemuQ60B7";
 
 const DAILY_SUMMARY_EMAIL = "Joaopedromaximiliano@gmail.com";
 const TIMEZONE = "America/Sao_Paulo";
@@ -42,19 +38,35 @@ module.exports = async function handler(req, res) {
         const contentRange = countResponse.headers.get("content-range") || "0";
         const viewsCount = parseInt(contentRange.split("/")[1] || "0", 10);
 
-        const emailResponse = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+        const emailResponse = await fetch("https://api.resend.com/emails", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${process.env.RESEND_API_KEY}`
+            },
             body: JSON.stringify({
-                service_id: EMAILJS_SERVICE_ID,
-                template_id: EMAILJS_TEMPLATE_ID,
-                user_id: EMAILJS_PUBLIC_KEY,
-                accessToken: process.env.EMAILJS_PRIVATE_KEY,
-                template_params: {
-                    to_email: DAILY_SUMMARY_EMAIL,
-                    date: dateLabel,
-                    views_count: viewsCount
-                }
+                from: "Planner João <onboarding@resend.dev>",
+                to: [DAILY_SUMMARY_EMAIL],
+                subject: `Resumo Diário - ${dateLabel} - ${viewsCount} aberturas do link`,
+                html: `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0b0b0c; color: #ffffff; padding: 30px; border-radius: 12px;">
+                        <h2 style="color: #d4af37; border-bottom: 2px solid #d4af37; padding-bottom: 10px;">Resumo Diário do Link</h2>
+                        <p style="color: #a1a1aa; font-size: 13px; margin-top: -5px;">João Maximiliano | Consultoria Financeira</p>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                            <tr>
+                                <td style="padding: 8px 0; color: #a1a1aa; width: 160px;">Data</td>
+                                <td style="padding: 8px 0; font-weight: bold; color: #d4af37;">${dateLabel}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; color: #a1a1aa;">Aberturas do link</td>
+                                <td style="padding: 8px 0; font-weight: bold; font-size: 20px; color: #d4af37;">${viewsCount}</td>
+                            </tr>
+                        </table>
+                        <div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid rgba(212,175,55,0.2); font-size: 12px; color: #a1a1aa;">
+                            Este e-mail foi gerado automaticamente todos os dias pelo site.
+                        </div>
+                    </div>
+                `
             })
         });
 

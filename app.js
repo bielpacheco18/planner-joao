@@ -7,12 +7,6 @@ const SUPABASE_URL = "https://dudkonsmprvzmzrejaan.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1ZGtvbnNtcHJ2em16cmVqYWFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MjE0NDgsImV4cCI6MjA5OTA5NzQ0OH0.zslpCQMCFiLd4BrX-uH1fTvSE7d7GTbdG43dZ6cPyRE";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Credenciais do EmailJS (notificação automática por e-mail ao assessor)
-const EMAILJS_PUBLIC_KEY = "bWTyWHWxUemuQ60B7";
-const EMAILJS_SERVICE_ID = "service_2n5ag1a";
-const EMAILJS_TEMPLATE_ID = "template_2yynbd8";
-emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-
 // Inicialização e Monitoramento da Rota Admin por Hash
 window.addEventListener("DOMContentLoaded", () => {
     checkHashRoute();
@@ -448,21 +442,19 @@ async function saveLead(lead) {
     }
 }
 
-// Notificação automática por e-mail ao assessor (via EmailJS)
+// Notificação automática por e-mail ao assessor (via Resend, através da função serverless)
 async function sendLeadEmail(lead) {
     try {
-        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-            lead_type: lead.type,
-            lead_name: lead.name,
-            lead_email: lead.email,
-            lead_phone: lead.phone,
-            lead_income: lead.income,
-            lead_invested: lead.invested,
-            lead_extra: lead.extra,
-            lead_date: lead.date
+        const response = await fetch("/api/send-lead-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(lead)
         });
+        if (!response.ok) {
+            console.error("Erro ao enviar e-mail de notificação:", await response.text());
+        }
     } catch (error) {
-        console.error("Erro ao enviar e-mail de notificação via EmailJS:", error);
+        console.error("Erro ao enviar e-mail de notificação:", error);
     }
 }
 
