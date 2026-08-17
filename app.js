@@ -20,7 +20,17 @@ window.addEventListener("DOMContentLoaded", () => {
     watchGoogleTranslateBanner();
     initProgressBar();
     captureLeadSource();
+    trackPageView();
 });
+
+// Registra a abertura do link (mesmo sem preenchimento do formulário), exceto na rota admin
+function trackPageView() {
+    if (window.location.hash === "#admin") return;
+    supabaseClient.from("page_views").insert([{ source: getLeadSourceLabel() }])
+        .then(({ error }) => {
+            if (error) console.error("Erro ao registrar visualização:", error);
+        });
+}
 
 window.addEventListener("hashchange", () => {
     checkHashRoute();
