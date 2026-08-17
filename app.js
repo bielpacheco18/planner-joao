@@ -179,7 +179,7 @@ function toggleCnpjFields() {
 }
 
 // Campos de texto/data obrigatórios do formulário (fora dos seletores em cards)
-const REQUIRED_TEXT_FIELDS = ["f-name", "f-cpf", "f-birth", "f-email", "f-phone"];
+const REQUIRED_TEXT_FIELDS = ["f-name", "f-email", "f-phone"];
 
 // Campos opcionais que ainda assim contam para a barra de progresso
 const PROGRESS_ONLY_FIELDS = ["f-goals"];
@@ -242,41 +242,9 @@ function formatPhone(input) {
     }
 }
 
-// Formatação do CPF em tempo real: 000.000.000-00
-function formatCPF(input) {
-    let value = input.value.replace(/\D/g, "");
-    if (value.length > 11) value = value.substring(0, 11);
-
-    if (value.length > 9) {
-        input.value = `${value.substring(0, 3)}.${value.substring(3, 6)}.${value.substring(6, 9)}-${value.substring(9)}`;
-    } else if (value.length > 6) {
-        input.value = `${value.substring(0, 3)}.${value.substring(3, 6)}.${value.substring(6)}`;
-    } else if (value.length > 3) {
-        input.value = `${value.substring(0, 3)}.${value.substring(3)}`;
-    } else {
-        input.value = value;
-    }
-}
-
-// Formatação da data de nascimento em tempo real: dd/mm/aaaa
-function formatBirthDate(input) {
-    let value = input.value.replace(/\D/g, "");
-    if (value.length > 8) value = value.substring(0, 8);
-
-    if (value.length > 4) {
-        input.value = `${value.substring(0, 2)}/${value.substring(2, 4)}/${value.substring(4)}`;
-    } else if (value.length > 2) {
-        input.value = `${value.substring(0, 2)}/${value.substring(2)}`;
-    } else {
-        input.value = value;
-    }
-}
-
 // Lê os campos do formulário e monta o lead + mensagem de WhatsApp
 function collectLeadData() {
     const name = document.getElementById("f-name").value;
-    const cpf = document.getElementById("f-cpf").value;
-    const birth = document.getElementById("f-birth").value;
     const email = document.getElementById("f-email").value;
     const phone = document.getElementById("f-phone").value;
     const investAdvisor = document.getElementById("f-invest-advisor").value;
@@ -298,7 +266,7 @@ function collectLeadData() {
     const goals = document.getElementById("f-goals").value || "Não informado";
     const source = getLeadSourceLabel();
 
-    const extra = `CPF: ${cpf} | Nascimento: ${birth} | Já investe: ${investAdvisor} | ` +
+    const extra = `Já investe: ${investAdvisor} | ` +
                   `Estratégia alinhada: ${alignment} | CNPJ/Estrutura: ${cnpj} | ` +
                   `Banco PJ: ${pjInstitution} | Investimentos PJ: ${pjInvests} | Holding: ${pjHolding} | ` +
                   `Sabe quanto acumular: ${accumulate} | Contas: ${institution} | ` +
@@ -317,8 +285,6 @@ function collectLeadData() {
 
     const messageText = `*Novo Planejamento Financeiro - João Maximiliano*\n\n` +
                   `👤 *Nome:* ${name}\n` +
-                  `🆔 *CPF:* ${cpf}\n` +
-                  `🎂 *Nascimento:* ${birth}\n` +
                   `📧 *E-mail:* ${email}\n` +
                   `📱 *WhatsApp:* ${phone}\n` +
                   `📊 *Já investe:* ${investAdvisor}\n` +
